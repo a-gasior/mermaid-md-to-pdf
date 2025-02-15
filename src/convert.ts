@@ -33,6 +33,17 @@ const createHtmlDocument = (content: string): string => `
     <style>
       body { margin: 2em; }
       .mermaid { margin: 1em 0; }
+      /* Add styles for headings and links */
+      h1, h2, h3, h4, h5, h6 {
+        scroll-margin-top: 1em;
+      }
+      a {
+        color: #0366d6;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
     </style>
   </head>
   <body>
@@ -52,10 +63,40 @@ const convertToPDF = async (options: PDFOptions): Promise<void> => {
   try {
     // Read and convert markdown
     const markdown = await fs.readFile(options.inputPath, "utf8");
-    const md = new MarkdownIt();
+
+    // Configure markdown-it with anchor handling
+    const md = new MarkdownIt({
+      html: true,
+      linkify: true,
+      typographer: true,
+    });
+
+    // Add heading anchor IDs
+    md.use((md) => {
+      const originalHeadingOpen =
+        md.renderer.rules.heading_open ||
+        ((tokens, idx, options, env, self) =>
+          self.renderToken(tokens, idx, options));
+
+      md.renderer.rules.heading_open = (tokens, idx, options, env, self) => {
+        const title = tokens[idx + 1].content;
+        const slug = title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/(^-|-$)/g, "");
+
+        tokens[idx].attrPush(["id", slug]);
+        return originalHeadingOpen(tokens, idx, options, env, self);
+      };
+
+      return md;
+    });
 
     const html = md
       .render(markdown)
+      // Handle Mermaid blocks
       .replace(
         /<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g,
         '<div class="mermaid">$1</div>'
@@ -72,9 +113,11 @@ const convertToPDF = async (options: PDFOptions): Promise<void> => {
     const tempFilePath = resolve(process.cwd(), options.tempPath);
     await page.goto(`file://${tempFilePath}`);
 
+    // Wait for Mermaid diagrams and ensure all content is loaded
     await waitForMermaidRender(page);
+    await page.waitForLoadState("networkidle");
 
-    // Generate PDF
+    // Generate PDF with enabled links
     await page.pdf({
       path: options.outputPath,
       format: options.format || "A4",
@@ -84,6 +127,11 @@ const convertToPDF = async (options: PDFOptions): Promise<void> => {
         bottom: "1cm",
         left: "1cm",
       },
+      printBackground: true,
+      displayHeaderFooter: false,
+      preferCSSPageSize: true,
+      tagged: true, // Enable PDF tagging for better accessibility
+      landscape: false,
     });
 
     await browser.close();

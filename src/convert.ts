@@ -63,10 +63,19 @@ const createHtmlDocument = (content: string): string => `
       a {
         color: #000000;
         text-decoration: none;
+        border-bottom: 1px dotted #666;
+      }
+
+      h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+        border-bottom: none;
+      }
+
+      code a {
+        border-bottom: none;
       }
 
       a:hover {
-        text-decoration: underline;
+        border-bottom: 1px solid #000;
       }
 
       code {

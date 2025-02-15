@@ -172,10 +172,16 @@ const convertToPDF = async (options: PDFOptions): Promise<void> => {
     await waitForMermaidRender(page);
     await page.waitForLoadState("networkidle");
 
-    // Generate PDF with enabled links
+    // Get the full height of the content
+    const height = await page.evaluate(() => {
+      return document.documentElement.scrollHeight;
+    });
+
+    // Generate PDF with custom page size
     await page.pdf({
       path: options.outputPath,
-      format: options.format || "A4",
+      width: "8.5in",
+      height: `${height}px`,
       margin: options.margins || {
         top: "1cm",
         right: "1cm",
@@ -185,8 +191,7 @@ const convertToPDF = async (options: PDFOptions): Promise<void> => {
       printBackground: true,
       displayHeaderFooter: false,
       preferCSSPageSize: true,
-      tagged: true, // Enable PDF tagging for better accessibility
-      landscape: false,
+      tagged: true,
     });
 
     await browser.close();

@@ -31,18 +31,64 @@ const createHtmlDocument = (content: string): string => `
       mermaid.initialize({ startOnLoad: true });
     </script>
     <style>
-      body { margin: 2em; }
-      .mermaid { margin: 1em 0; }
-      /* Add styles for headings and links */
-      h1, h2, h3, h4, h5, h6 {
-        scroll-margin-top: 1em;
+      body {
+        margin: 3cm;
+        font-family: "Times New Roman", Times, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        max-width: 75ch;
+        margin-left: auto;
+        margin-right: auto;
       }
+      
+      .mermaid { 
+        margin: 2em 0; 
+      }
+
+      h1, h2, h3, h4, h5, h6 {
+        font-family: "Times New Roman", Times, serif;
+        scroll-margin-top: 1em;
+        line-height: 1.2;
+      }
+
+      h1 { font-size: 18pt; margin-top: 2em; }
+      h2 { font-size: 16pt; margin-top: 1.5em; }
+      h3 { font-size: 14pt; margin-top: 1.3em; }
+
+      p {
+        text-align: justify;
+        margin: 1em 0;
+      }
+
       a {
-        color: #0366d6;
+        color: #000000;
         text-decoration: none;
       }
+
       a:hover {
         text-decoration: underline;
+      }
+
+      code {
+        font-family: "Courier New", Courier, monospace;
+        font-size: 11pt;
+        background-color: #f5f5f5;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+      }
+
+      pre code {
+        display: block;
+        padding: 1em;
+        overflow-x: auto;
+        line-height: 1.4;
+      }
+
+      blockquote {
+        margin: 1.5em 0;
+        padding-left: 1em;
+        border-left: 3px solid #ccc;
+        font-style: italic;
       }
     </style>
   </head>

@@ -1,0 +1,26 @@
+{
+  "name": "mermaid-md-to-pdf",
+  "type": "module",
+  "bin": {
+    "mermaid-md-to-pdf": "./dist/convert.js"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/convert.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^22.13.4",
+    "commander": "^13.1.0",
+    "markdown-it": "^14.1.0",
+    "playwright": "^1.50.1",
+    "typescript": "^5.7.3"
+  }
+}
